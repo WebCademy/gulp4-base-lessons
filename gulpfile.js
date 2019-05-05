@@ -1,21 +1,27 @@
-var gulp = require('gulp');
+const { src, dest, watch, series, parallel, task } = require('gulp');
 var browserSync = require('browser-sync').create();
 var less = require('gulp-less');
-var sass = require('gulp-sass');
 
-gulp.task('sass', function() {
-	return gulp.src('./app/scss/main.scss')
-		.pipe(sass())
-		.pipe(gulp.dest('./app/css/'))
-		.pipe(browserSync.stream())
-});
+function gulpLess(){
+    return src('./app/less/main.less')
+	    .pipe(less())
+	    .pipe(dest('./app/css/'))
+	    .pipe(browserSync.stream())
+}
 
-gulp.task('server', function() {
+function gulpServer(done){
 	browserSync.init({
-		server: { baseDir: './app/'}
+       server: {
+           baseDir: "./app/"
+       }
 	});
-	gulp.watch('./app/**/*.html').on('change', browserSync.reload);
-	gulp.watch('./app/scss/**/*.scss', gulp.series('sass') );
-});
+	done();
+}
 
-gulp.task('default', gulp.series('sass', 'server'));
+function gulpWatch(){
+	watch('./app/**/*.html').on('change', browserSync.reload);
+	watch('./app/less/**/*.less', series(gulpLess));
+}
+
+task('default', series(gulpLess, parallel(gulpServer, gulpWatch) ))
+
