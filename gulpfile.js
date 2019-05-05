@@ -1,18 +1,12 @@
 var gulp = require('gulp');
+var browserSync = require('browser-sync').create();
 
-function gulpFirst (done) {
-	console.log('Самая первая задача! Это задача first!');
-	done();
-}
+gulp.task('server', function() {
+    browserSync.init({
+    	server: { baseDir: './app/'}
+    });
+    gulp.watch('./app/**/*.html').on('change', browserSync.reload);
+    gulp.watch('./app/**/*.css').on('change', browserSync.reload);
+});
 
-function gulpSecond (done) {
-	console.log('Вторая задача! Это задача second!');
-	done();
-}
-
-function gulpThird (done) {
-	console.log('Третья задача! Это задача third!');
-	done();
-}
-
-gulp.task('default', gulp.series(gulpFirst, gulpSecond, gulpThird));
+gulp.task('default', gulp.series('server'));
