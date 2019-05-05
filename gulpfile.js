@@ -1,10 +1,11 @@
 var gulp = require('gulp');
 var browserSync = require('browser-sync').create();
 var less = require('gulp-less');
+var sass = require('gulp-sass');
 
-gulp.task('less', function() {
-	return gulp.src('./app/less/main.less')
-		.pipe(less())
+gulp.task('sass', function() {
+	return gulp.src('./app/scss/main.scss')
+		.pipe(sass())
 		.pipe(gulp.dest('./app/css/'))
 		.pipe(browserSync.stream())
 });
@@ -14,7 +15,7 @@ gulp.task('server', function() {
 		server: { baseDir: './app/'}
 	});
 	gulp.watch('./app/**/*.html').on('change', browserSync.reload);
-	gulp.watch('./app/less/**/*.less', gulp.series('less') );
+	gulp.watch('./app/scss/**/*.scss', gulp.series('sass') );
 });
 
-gulp.task('default', gulp.series('less', 'server'));
+gulp.task('default', gulp.series('sass', 'server'));
